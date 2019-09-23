@@ -37,6 +37,7 @@ VehicleTracker.prototype.init = function () {
     google.maps.event.addListener(map, 'zoom_changed', VehicleTracker.zoomChange.bind(this));
 
 }
+//add vehicle for tracking
 VehicleTracker.prototype.track = function (id, loc) {
     let vehicle = this.vehiclesTracked[id];
     if (vehicle === undefined) {
@@ -49,6 +50,7 @@ VehicleTracker.prototype.track = function (id, loc) {
         vehicle.moveTo(loc);
     }
 }
+//start tracking all
 VehicleTracker.prototype.trackAll = function (locations) {
     if (locations) {
         let unTracked = new Set(Object.keys(this.vehiclesTracked));
@@ -64,6 +66,7 @@ VehicleTracker.prototype.trackAll = function (locations) {
         })
     }
 };
+//stop tracking vehicle
 VehicleTracker.prototype.stopTracking = function (id) {
     let vehicle = this.vehiclesTracked[id];
     if (vehicle) {
@@ -74,6 +77,7 @@ VehicleTracker.prototype.stopTracking = function (id) {
         delete this.vehiclesTracked[id];//stopTracking
     }
 };
+// zoom change event handler
 VehicleTracker.zoomChange = function () {
     ZOOM_LEVEL = this.map.getZoom();
     CarIcon.scale = calulateScale(ZOOM_LEVEL)
