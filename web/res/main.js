@@ -12,23 +12,14 @@ function initMap() {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         zoom: ZOOM_LEVEL
     });
-    google.maps.event.addListener(map, 'zoom_changed', zoomChange);
+    
     //init Tracker
     tracker = new VehicleTracker(map);
-
+    
     /**start timer */
     goLive();   
 }
-function zoomChange() {
-    ZOOM_LEVEL = map.getZoom();
-    let tracked = tracker.vehiclesTracked;
-    for(let id in tracked){
-        let v = tracked[id];
-        let m = v.marker;
-        m.icon.scale =  ZOOM_LEVEL/10;
-        m.setIcon(m.icon);
-    }
-};
+
 function goLive(){
     timer = setInterval(function () {
         console.log("ping..");
@@ -51,7 +42,7 @@ function requestLocations() {
         contentType: "json",
         dataType: "json",
         success: function (data) {
-            tracker.startTracking(data);
+            tracker.trackAll(data);
         }
     });
 }

@@ -3,14 +3,21 @@
 const Vehicle = function(id,location,map){
     this.id=id;
     this.location=location;
-    this.cluster=false;
+    this.marker=null;
+    
+    //rest of the contructure code
+    this.create(id,location,map);
+   
+}
+/**create marker*/
+Vehicle.prototype.create=function(id,location,map){
     this.marker= new SlidingMarker({
         position: location,
-        map: this.map,
-        icon: getCarIcon(getBearingAngle(location,CENTER)),
+        map: map,
+        icon: getCarIcon(location,CENTER),
         title: "Car: " + id,
         duration: UPDATE_RATE
-    });    
+    });  
 }
 /**remove marker from map */
 Vehicle.prototype.destroy=function(){
@@ -21,14 +28,16 @@ Vehicle.prototype.moveTo=function(newLocation){
     if(this.location && newLocation){
         if(! isSame(this.location,newLocation)){
             //moved
-            this.marker.setIcon(getCarIcon(getBearingAngle(this.location,newLocation)))
+            this.marker.setIcon(getCarIcon(this.location,newLocation))
             this.location=newLocation;
-            // moveSmooth(this.marker,this.location,newLocation)
             this.marker.setPosition(newLocation);
         }
-    }else{
-        //do nothing 
     }
+}
+/**get car SVG icon for the given rotation */
+function getCarIcon(from , to){
+    CarIcon.rotation = getBearingAngle(from,to);
+    return CarIcon;
 }
 
 /**Manage clustering */
@@ -39,5 +48,5 @@ function isSame(loc1,loc2){
 function getBearingAngle(lastPosn, dest){
     let x = dest.lng - lastPosn.lng;
     let y = dest.lat - lastPosn.lat;
-    return Math.round(Math.atan2(x,y)*57.3); // rad*180/pi;
+    return Math.round(Math.atan2(x,y)*57.296); // rad*180/pi;
 }

@@ -27,27 +27,34 @@ VehicleTracker.prototype.init = function(){
             imagePath: CLUSTER_CAR_IMG,
             minimumClusterSize: CLUSTER_MIN_SIZE,
             gridSize: CLUSTER_GRID_SIZE,
-            maxZoom: 18,
+            maxZoom: 20,
             averageCenter: true
         });
     }
+
+    //zoom change event
+    google.maps.event.addListener(map, 'zoom_changed', VehicleTracker.zoomChange.bind(this));
+
 }
-VehicleTracker.prototype.startTracking = function (data) {
-    if (data) {
+VehicleTracker.prototype.track = function (id,loc) {
+    let vehicle = this.vehiclesTracked[id];
+    if (vehicle === undefined) {
+        //vehicle is not being tracked
+        vehicle = new Vehicle(id, loc, this.map);
+        this.vehiclesTracked[id] = vehicle;//new vehicle
+        this.cluster.addMarker(vehicle.marker);
+    } else {
+        //already being tracked
+        vehicle.moveTo(loc);
+    }
+}
+VehicleTracker.prototype.trackAll = function (locations) {
+    if (locations) {
         let unTracked = new Set(Object.keys(this.vehiclesTracked));
-        for (let id in data) {
-            let loc = data[id];
+        for (let id in locations) {
+            let loc = locations[id];
             if (loc) { //add distace check here if it is need at front end
-                let vehicle = this.vehiclesTracked[id];
-                if (vehicle === undefined) {
-                    //vehicle is not being tracked
-                    vehicle = new Vehicle(id, loc, this.map);
-                    this.vehiclesTracked[id] = vehicle;//new vehicle
-                    this.cluster.addMarker(vehicle.marker);
-                } else {
-                    //already being tracked
-                    vehicle.moveTo(loc);
-                }
+                this.track(id,loc)
                 unTracked.delete(id);
             }
         }
@@ -58,7 +65,7 @@ VehicleTracker.prototype.startTracking = function (data) {
 };
 VehicleTracker.prototype.stopTracking = function (id) {
     let vehicle = this.vehiclesTracked[id];
-    if (vehicle instanceof Vehicle) {
+    if (vehicle) {
         if (this.cluster) {
             this.cluster.removeMarker(vehicle.marker);
         }
@@ -66,3 +73,14 @@ VehicleTracker.prototype.stopTracking = function (id) {
         delete this.vehiclesTracked[id];//stopTracking
     }
 };
+VehicleTracker.zoomChange=function() {
+    ZOOM_LEVEL = this.map.getZoom();
+    CarIcon.scale = ZOOM_LEVEL*CAR_SIZE/20;
+    let tracked = this.vehiclesTracked;
+    for(let id in tracked){
+        let v = tracked[id];
+        let m = v.marker;
+        m.icon.scale =  CarIcon.scale;
+        m.setIcon(m.icon);
+    }
+}

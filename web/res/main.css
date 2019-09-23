@@ -1,0 +1,29 @@
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+#map {
+    height: 100%;
+    max-width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.dashboard {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+.dashboard input:first-child {
+    width: 70px;
+}
+@media only screen and (max-width: 1024px) {
+    #map {
+        width:100%;
+    }
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
