@@ -11,7 +11,10 @@ const VehicleTracker = function (map) {
 }
 VehicleTracker.prototype.init = function () {
     //draw city boundaries
-    new google.maps.Circle({
+    if(this.circle){
+        this.circle.setMap(null);
+    }
+    this.circle = new google.maps.Circle({
         strokeColor: '#FF0000',
         strokeOpacity: 0.75,
         strokeWeight: 0.4,
@@ -34,7 +37,9 @@ VehicleTracker.prototype.init = function () {
 
     //zoom change event
     CarIcon.scale = calulateScale(map.getZoom());
-    google.maps.event.addListener(map, 'zoom_changed', VehicleTracker.zoomChange.bind(this));
+    if(this.zoomEvent === undefined){
+        this.zoomEvent=google.maps.event.addListener(map, 'zoom_changed', VehicleTracker.zoomChange.bind(this));
+    }
 
 }
 //add vehicle for tracking

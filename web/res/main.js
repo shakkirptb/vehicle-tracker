@@ -54,11 +54,13 @@ $(function () {
 });
 function setRange() {
     RANGE = $(txtRange).val();
-    initMap();
+    tracker.init();
+    requestLocations();
 }
 function setCenter() {
-    CENTER = $(txtCenter).val();
-    initMap();
+    CENTER = JSON.parse($(txtCenter).val());
+    tracker.init();
+    requestLocations();
 }
 function tougleFreeze(){
     if (timer) { 
