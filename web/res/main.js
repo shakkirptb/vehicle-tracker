@@ -16,12 +16,8 @@ function initMap() {
     //init Tracker
     tracker = new VehicleTracker(map);
 
-    /**poling continuosly for verhicle stats */
-    requestLocation();
-    resume();
-    
-    $(timeBtn).html("Freeze");
-    
+    /**start timer */
+    goLive();   
 }
 function zoomChange() {
     ZOOM_LEVEL = map.getZoom();
@@ -33,19 +29,21 @@ function zoomChange() {
         m.setIcon(m.icon);
     }
 };
-function resume(){
+function goLive(){
     timer = setInterval(function () {
         console.log("ping..");
-        requestLocation();
+        requestLocations();
     }, UPDATE_RATE);
     /** testing stop after  a few min*/
     if(STOP_LIVE_AFTER !== 0){
         setTimeout(function () { clearTimer(); }, STOP_LIVE_AFTER);
     }
+    
+    $(timeBtn).html("Freeze");
 }
 
 /**ajax for location update */
-function requestLocation() {
+function requestLocations() {
     $.ajax({
         url: LOCATIONS_REAST_URL,
         data: { center: CENTER, range: RANGE },
@@ -75,8 +73,7 @@ function tougleFreeze(){
     if (timer) { 
         clearTimer();
     }else{
-        resume();
-        $(timeBtn).html("Freeze");
+        goLive();
     }
 }
 function clearTimer() {
