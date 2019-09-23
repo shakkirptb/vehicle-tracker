@@ -2,7 +2,7 @@
 let CENTER =  { lat: 52.53, lng: 13.403 };
 let RANGE = 3.5;
 let ZOOM_LEVEL=13;
-let CAR_SIZE=1.2;
+let CAR_SIZE=1;
 const CLUSTER_CAR_IMG = "img/cars-m";
 const LOCATIONS_REAST_URL= "/locations"
 const CLUSTER_MIN_SIZE = 3;

@@ -9,7 +9,7 @@ const VehicleTracker = function (map) {
     this.init();
 
 }
-VehicleTracker.prototype.init = function(){
+VehicleTracker.prototype.init = function () {
     //draw city boundaries
     new google.maps.Circle({
         strokeColor: '#FF0000',
@@ -19,8 +19,8 @@ VehicleTracker.prototype.init = function(){
         fillOpacity: 0.02,
         map: this.map,
         center: CENTER,
-        radius: RANGE*1000
-      });
+        radius: RANGE * 1000
+    });
     //initiate clustering
     if (this.cluster === null) {
         this.cluster = new MarkerClusterer(this.map, [], {
@@ -33,10 +33,11 @@ VehicleTracker.prototype.init = function(){
     }
 
     //zoom change event
+    CarIcon.scale = calulateScale(map.getZoom());
     google.maps.event.addListener(map, 'zoom_changed', VehicleTracker.zoomChange.bind(this));
 
 }
-VehicleTracker.prototype.track = function (id,loc) {
+VehicleTracker.prototype.track = function (id, loc) {
     let vehicle = this.vehiclesTracked[id];
     if (vehicle === undefined) {
         //vehicle is not being tracked
@@ -54,7 +55,7 @@ VehicleTracker.prototype.trackAll = function (locations) {
         for (let id in locations) {
             let loc = locations[id];
             if (loc) { //add distace check here if it is need at front end
-                this.track(id,loc)
+                this.track(id, loc)
                 unTracked.delete(id);
             }
         }
@@ -73,14 +74,19 @@ VehicleTracker.prototype.stopTracking = function (id) {
         delete this.vehiclesTracked[id];//stopTracking
     }
 };
-VehicleTracker.zoomChange=function() {
+VehicleTracker.zoomChange = function () {
     ZOOM_LEVEL = this.map.getZoom();
-    CarIcon.scale = ZOOM_LEVEL*CAR_SIZE/20;
+    CarIcon.scale = calulateScale(ZOOM_LEVEL)
     let tracked = this.vehiclesTracked;
-    for(let id in tracked){
+    for (let id in tracked) {
         let v = tracked[id];
         let m = v.marker;
-        m.icon.scale =  CarIcon.scale;
+        m.icon.scale = CarIcon.scale;
         m.setIcon(m.icon);
     }
+}
+
+function calulateScale(zoom) {
+    var i = ((Math.pow(zoom, 2)) - (zoom * 8)) / 100;
+    return CAR_SIZE * (i > 1.5 ? 1.5 : (i < .3 ? .3:i))
 }
