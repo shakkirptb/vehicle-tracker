@@ -34,7 +34,8 @@ VehicleTracker.prototype.init = function () {
             averageCenter: true
         });
     }
-
+    //set rotational axis
+    CarIcon.anchor = new google.maps.Point(25, 25),
     //zoom change event
     CarIcon.scale = calulateScale(map.getZoom());
     if(this.zoomEvent === undefined){
