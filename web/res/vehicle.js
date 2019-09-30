@@ -38,6 +38,10 @@ Vehicle.prototype.animateRotation = function(newLocation){
     //animate  space and angle transition;
     this.bearingTo =getBearingAngle(this.location,newLocation);
     this.angleToTurn = this.bearingTo-this.angle;
+    if(Math.abs(this.angleToTurn) < 5){
+        this.marker.setIcon(getCarIcon(this.bearingTo));
+        return;
+    }
     this.angleToTurn = Math.abs(this.angleToTurn) > 180 ? -(360-this.angleToTurn) : this.angleToTurn;
     this.deltaAngle =   this.angleToTurn/10;
     startRotation(this);
